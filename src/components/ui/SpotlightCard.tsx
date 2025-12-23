@@ -1,13 +1,23 @@
-import { useRef, useState } from 'react';
-import { cn } from '../../lib/utils'; // Adjust path based on location
+import React, { useRef, useState, ReactNode, MouseEvent } from 'react';
+import { cn } from '@/lib/utils';
 
-export default function SpotlightCard({ children, className = "", spotlightColor = "rgba(237, 28, 36, 0.15)" }) {
-    const divRef = useRef(null);
+interface SpotlightCardProps {
+    children: ReactNode;
+    className?: string;
+    spotlightColor?: string;
+}
+
+const SpotlightCard: React.FC<SpotlightCardProps> = ({
+    children,
+    className = "",
+    spotlightColor = "rgba(237, 28, 36, 0.15)"
+}) => {
+    const divRef = useRef<HTMLDivElement>(null);
     const [isFocused, setIsFocused] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [opacity, setOpacity] = useState(0);
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
         if (!divRef.current || isFocused) return;
 
         const div = divRef.current;
@@ -57,4 +67,6 @@ export default function SpotlightCard({ children, className = "", spotlightColor
             <div className="relative h-full">{children}</div>
         </div>
     );
-}
+};
+
+export default SpotlightCard;

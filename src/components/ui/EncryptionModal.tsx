@@ -1,9 +1,23 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Unlock, X, Check, ShieldAlert } from 'lucide-react';
+import { Lock, Unlock, X, ShieldAlert } from 'lucide-react';
 import SpotlightCard from './SpotlightCard';
 
-export default function EncryptionModal({ isOpen, onClose, onConfirm, mode = 'encrypt', title }) {
+interface EncryptionModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: (password: string) => Promise<void> | void;
+    mode?: 'encrypt' | 'decrypt';
+    title?: string;
+}
+
+const EncryptionModal: React.FC<EncryptionModalProps> = ({
+    isOpen,
+    onClose,
+    onConfirm,
+    mode = 'encrypt',
+    title
+}) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +29,7 @@ export default function EncryptionModal({ isOpen, onClose, onConfirm, mode = 'en
         }
     }, [isOpen]);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         if (!password.trim()) {
             setError('Password is required');
@@ -28,8 +42,9 @@ export default function EncryptionModal({ isOpen, onClose, onConfirm, mode = 'en
         try {
             await onConfirm(password);
             onClose();
-        } catch (err) {
-            setError(err.message || 'Operation failed. Check password.');
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Operation failed. Check password.';
+            setError(message);
         } finally {
             setIsLoading(false);
         }
@@ -106,8 +121,8 @@ export default function EncryptionModal({ isOpen, onClose, onConfirm, mode = 'en
                                         type="submit"
                                         disabled={isLoading}
                                         className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium text-white transition-all shadow-lg flex items-center justify-center gap-2 ${mode === 'encrypt'
-                                                ? 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-900/20'
-                                                : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/20'
+                                            ? 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-900/20'
+                                            : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/20'
                                             }`}
                                     >
                                         {isLoading ? (
@@ -127,4 +142,6 @@ export default function EncryptionModal({ isOpen, onClose, onConfirm, mode = 'en
             </div>
         </AnimatePresence>
     );
-}
+};
+
+export default EncryptionModal;

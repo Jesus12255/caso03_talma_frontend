@@ -1,17 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import FileUpload from '../features/analysis/components/FileUpload';
-import ResultsBoard from '../features/analysis/components/ResultsBoard';
-import { useAnalysis } from '../features/analysis/hooks/useAnalysis';
+import FileUpload from '@/features/analysis/components/FileUpload';
+import ResultsBoard from '@/features/analysis/components/ResultsBoard';
+import { useAnalysis } from '@/features/analysis/hooks/useAnalysis';
 
-export default function Dashboard() {
+const Dashboard: React.FC = () => {
     const { status, results, thinking, analyzeFiles, resetAnalysis } = useAnalysis();
-    const thinkingRef = useRef(null);
+    const thinkingRef = useRef<HTMLDivElement>(null);
 
-    const handleFilesSelected = (files) => {
+    const handleFilesSelected = (files: File[]) => {
         analyzeFiles(files);
     };
-
 
     useEffect(() => {
         if (thinkingRef.current) {
@@ -124,4 +123,6 @@ export default function Dashboard() {
             </AnimatePresence>
         </div>
     );
-}
+};
+
+export default Dashboard;
