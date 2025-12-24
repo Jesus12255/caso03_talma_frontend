@@ -11,7 +11,7 @@ export default {
                     // Base backgrounds - Deep rich darks
                     dark: '#050505',      // Main background (near black)
                     card: '#09090b',      // Card background
-                    surface: '#121215',   // Hover/Secondary surface
+                    surface: '#0A0A0A',   // Hover/Secondary surface
 
                     // Accents
                     red: '#ED1C24',       // Primary Brand Red
@@ -47,5 +47,23 @@ export default {
             }
         },
     },
-    plugins: [],
+    plugins: [
+        function ({ addUtilities }) {
+            const newUtilities = {
+                '.text-stroke': {
+                    '-webkit-text-stroke': '1px var(--tw-text-stroke-color, currentColor)',
+                },
+                '.text-stroke-2': {
+                    '-webkit-text-stroke': '2px var(--tw-text-stroke-color, currentColor)',
+                },
+                '.text-stroke-3': {
+                    '-webkit-text-stroke': '3px var(--tw-text-stroke-color, currentColor)',
+                },
+                '.text-stroke-red': {
+                    '--tw-text-stroke-color': '#ED1C24',
+                },
+            }
+            addUtilities(newUtilities)
+        }
+    ],
 }
