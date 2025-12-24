@@ -24,7 +24,9 @@ export default {
                 }
             },
             fontFamily: {
-                sans: ['Inter', 'sans-serif'], // Ensure Inter is used if available, or system sans
+                sans: ['Inter', 'sans-serif'],
+                poppins: ['Poppins', 'sans-serif'],
+                nunito: ['"Nunito Sans"', 'sans-serif'],
             },
             animation: {
                 'fade-in': 'fadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards',
