@@ -40,7 +40,7 @@ export default function LoginPage() {
 
         try {
             await login({ email, password });
-            navigate('/'); // Go to dashboard after login
+            navigate('/users'); // Redirect to Users List after login
         } catch (error) {
             setModalConfig({
                 isOpen: true,

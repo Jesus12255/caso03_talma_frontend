@@ -15,6 +15,7 @@ const UserList: React.FC = () => {
     const [totalRecords, setTotalRecords] = useState(0);
 
     const [filters, setFilters] = useState<UsuarioFiltroRequest>({
+        palabraClave: '',
         nombre: '',
         rolCodigo: '',
         start: 0,
@@ -37,7 +38,7 @@ const UserList: React.FC = () => {
     useEffect(() => {
         fetchUsers();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filters.start, filters.limit, filters.rolCodigo, filters.nombre]);
+    }, [filters.start, filters.limit, filters.rolCodigo, filters.nombre, filters.palabraClave]);
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -61,9 +62,12 @@ const UserList: React.FC = () => {
         }));
     };
 
-    const applySideFilters = () => {
-        setFilters(prev => ({ ...prev, start: 0 }));
-        fetchUsers();
+    const applySideFilters = (newFilters: Partial<UsuarioFiltroRequest>) => {
+        setFilters(prev => ({
+            ...prev,
+            ...newFilters,
+            start: 0
+        }));
         setIsFilterOpen(false);
     };
 
@@ -94,13 +98,8 @@ const UserList: React.FC = () => {
             <UserSidePanel
                 isOpen={isFilterOpen}
                 onClose={() => setIsFilterOpen(false)}
-                filters={filters}
-                onFilterChange={handleFilterChange}
+                currentFilters={filters}
                 onApply={applySideFilters}
-                onClear={() => {
-                    setFilters(prev => ({ ...prev, nombre: '', rolCodigo: '', start: 0 }));
-                    setIsFilterOpen(false);
-                }}
             />
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
