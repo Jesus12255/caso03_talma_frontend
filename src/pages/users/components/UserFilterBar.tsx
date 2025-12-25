@@ -5,7 +5,7 @@ import { UsuarioFiltroRequest } from '../../../services/UserService';
 interface UserFilterBarProps {
     filters: UsuarioFiltroRequest;
     onSearch: (e: React.FormEvent<HTMLFormElement>) => void;
-    onFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onFilterChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     onLimitChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     onOpenSidePanel: () => void;
     onCreateUser: () => void;
@@ -38,6 +38,8 @@ const UserFilterBar: React.FC<UserFilterBarProps> = ({
                         <ChevronDown className="w-4 h-4 text-gray-500" />
                     </div>
                 </div>
+
+
 
                 <form onSubmit={onSearch} className="flex-1 max-w-sm relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />

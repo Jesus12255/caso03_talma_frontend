@@ -39,16 +39,24 @@ const UserSidePanel: React.FC<UserSidePanelProps> = ({
             setLocalFilters({
                 nombre: currentFilters.nombre || '',
                 rolCodigo: currentFilters.rolCodigo || '',
+                habilitado: currentFilters.habilitado,
             });
         }
     }, [isOpen, currentFilters]);
 
     const handleLocalChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setLocalFilters(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        if (name === 'habilitado') {
+            setLocalFilters(prev => ({
+                ...prev,
+                habilitado: value === 'all' ? undefined : value === 'true'
+            }));
+        } else {
+            setLocalFilters(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
     const handleApply = () => {
@@ -58,7 +66,8 @@ const UserSidePanel: React.FC<UserSidePanelProps> = ({
     const handleClear = () => {
         const clearedFilters = {
             nombre: '',
-            rolCodigo: ''
+            rolCodigo: '',
+            habilitado: undefined
         };
         setLocalFilters(clearedFilters);
         onApply(clearedFilters);
@@ -97,7 +106,7 @@ const UserSidePanel: React.FC<UserSidePanelProps> = ({
                                 </button>
                             </div>
 
-                            <div className="space-y-6 flex-1">
+                            <div className="space-y-6 flex-1 text-left">
                                 <div className="space-y-2">
                                     <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Nombre</label>
                                     <input
@@ -110,17 +119,8 @@ const UserSidePanel: React.FC<UserSidePanelProps> = ({
                                     />
                                 </div>
 
-                                {/* Email Field removed or kept? Keeping as placeholder markup existed but user didn't mention it specifically logic-wise. 
-                                   The previous file had a markup for Email but NO input binding logic (it had no name/value/onChange). 
-                                   I'll check if I should keep it. The previous code was:
-                                   <input type="text" className="..." placeholder="correo@ejemplo.com" /> (Uncontrolled)
-                                   I will comment it out or remove it to avoid confusion since we don't handle it in localFilters yet, or I can add it if `correo` is in `UsuarioFiltroRequest`.
-                                   UsuarioFiltroRequest has `nombre`, `rolCodigo`, `fechaInicio`, `fechaFin`. It does NOT have `correo` explicitly (it has `palabraClave` which covers it).
-                                   So I will remove the Email input to clean up partial implementation.
-                                */}
-
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Operador (Rol)</label>
+                                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Rol</label>
                                     <select
                                         name="rolCodigo"
                                         value={localFilters.rolCodigo || ''}
@@ -133,6 +133,20 @@ const UserSidePanel: React.FC<UserSidePanelProps> = ({
                                                 {role.nombre}
                                             </option>
                                         ))}
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Estado</label>
+                                    <select
+                                        name="habilitado"
+                                        value={localFilters.habilitado === undefined ? 'all' : localFilters.habilitado ? 'true' : 'false'}
+                                        onChange={handleLocalChange}
+                                        className="w-full bg-[#08080A] border border-[#1B1818] rounded-lg px-4 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-tivit-red transition-all"
+                                    >
+                                        <option value="all">Todos</option>
+                                        <option value="true">Activos</option>
+                                        <option value="false">Inactivos</option>
                                     </select>
                                 </div>
                             </div>

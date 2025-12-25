@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit2, Trash2 } from 'lucide-react';
+import { Edit2, Power } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { UsuarioFiltroResponse } from '../../../services/UserService';
 
@@ -7,9 +7,10 @@ interface UserTableProps {
     users: UsuarioFiltroResponse[];
     loading: boolean;
     onEdit?: (user: UsuarioFiltroResponse) => void;
+    onStatusChange?: (user: UsuarioFiltroResponse) => void;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ users, loading, onEdit }) => {
+const UserTable: React.FC<UserTableProps> = ({ users, loading, onEdit, onStatusChange }) => {
 
     return (
         <motion.div
@@ -18,6 +19,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading, onEdit }) => {
             transition={{ duration: 0.4 }}
             className="bg-[#08080A]/50 border border-[#1B1818] rounded-xl overflow-hidden backdrop-blur-sm mb-4"
         >
+
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
@@ -65,6 +67,8 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading, onEdit }) => {
                                     }
                                 };
 
+                                const isActive = user.estado === 'ACTIVO';
+
                                 return (
                                     <motion.tr
                                         key={user.usuarioId}
@@ -106,8 +110,15 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading, onEdit }) => {
                                                 >
                                                     <Edit2 className="w-4 h-4" />
                                                 </button>
-                                                <button className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all" title="Eliminar">
-                                                    <Trash2 className="w-4 h-4" />
+                                                <button
+                                                    className={`p-2 rounded-lg transition-all ${isActive
+                                                        ? 'text-green-500 hover:bg-green-500/10 hover:text-green-400'
+                                                        : 'text-gray-500 hover:bg-gray-500/10 hover:text-gray-400'
+                                                        }`}
+                                                    title={isActive ? "Inhabilitar" : "Habilitar"}
+                                                    onClick={() => onStatusChange && onStatusChange(user)}
+                                                >
+                                                    <Power className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </td>

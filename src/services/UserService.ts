@@ -45,6 +45,11 @@ export const UserService = {
         return response.data;
     },
 
+    changeStatus: async (usuarioId: string, habilitado: boolean): Promise<BaseOperacionResponse> => {
+        const response = await api.post<BaseOperacionResponse>('/usuario/changeStatus', { usuarioId, habilitado });
+        return response.data;
+    },
+
     getById: async (id: string): Promise<UsuarioFiltroResponse> => {
         const response = await api.get<UsuarioFiltroResponse>(`/usuario/${id}`);
         return response.data;
@@ -73,6 +78,7 @@ export interface UsuarioFiltroRequest extends BaseRequest {
     rolCodigo?: string;
     fechaInicio?: string;
     fechaFin?: string;
+    habilitado?: boolean;
 }
 
 export interface UsuarioFiltroResponse {
