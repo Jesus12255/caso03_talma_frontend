@@ -1,11 +1,21 @@
 import { Settings, HelpCircle, User, LogOut, Bell, Menu } from 'lucide-react';
 import React from 'react';
+import { useAuthStore } from '../store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
     onMenuClick?: () => void;
 }
 
 export default function Header({ onMenuClick }: HeaderProps) {
+    const { logout } = useAuthStore();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
     return (
         <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-tivit-dark/70 backdrop-blur-xl supports-[backdrop-filter]:bg-tivit-dark/50">
             <div className="w-full h-16 flex items-center justify-between px-4 lg:px-6">
@@ -52,7 +62,10 @@ export default function Header({ onMenuClick }: HeaderProps) {
                     <button className="flex items-center justify-center w-9 h-9 text-tivit-muted hover:text-white transition-colors duration-300 rounded-lg hover:bg-white/5" title="Perfil">
                         <User size={18} />
                     </button>
-                    <button className="flex items-center justify-center w-9 h-9 text-tivit-muted hover:text-white transition-colors duration-300 rounded-lg hover:bg-white/5" title="Cerrar sesión">
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center justify-center w-9 h-9 text-tivit-muted hover:text-white transition-colors duration-300 rounded-lg hover:bg-white/5" title="Cerrar sesión"
+                    >
                         <LogOut size={18} />
                     </button>
                 </nav>
