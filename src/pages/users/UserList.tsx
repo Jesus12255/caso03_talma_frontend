@@ -5,16 +5,19 @@ import UserTable from './components/UserTable';
 import UserFilterBar from './components/UserFilterBar';
 import UserSidePanel from './components/UserSidePanel';
 import UserListPagination from './components/UserListPagination';
+import UserLoadingOverlay from './components/UserLoadingOverlay';
 
 const UserList: React.FC = () => {
     const navigate = useNavigate();
     const [users, setUsers] = useState<UsuarioFiltroResponse[]>([]);
     const [loading, setLoading] = useState(false);
+    const [actionLoading, setActionLoading] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     const [totalRecords, setTotalRecords] = useState(0);
 
     const [filters, setFilters] = useState<UsuarioFiltroRequest>({
+        palabraClave: '',
         nombre: '',
         rolCodigo: '',
         start: 0,
@@ -37,7 +40,7 @@ const UserList: React.FC = () => {
     useEffect(() => {
         fetchUsers();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filters.start, filters.limit, filters.rolCodigo, filters.nombre]);
+    }, [filters.start, filters.limit, filters.rolCodigo, filters.nombre, filters.palabraClave, filters.habilitado]);
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -61,9 +64,12 @@ const UserList: React.FC = () => {
         }));
     };
 
-    const applySideFilters = () => {
-        setFilters(prev => ({ ...prev, start: 0 }));
-        fetchUsers();
+    const applySideFilters = (newFilters: Partial<UsuarioFiltroRequest>) => {
+        setFilters(prev => ({
+            ...prev,
+            ...newFilters,
+            start: 0
+        }));
         setIsFilterOpen(false);
     };
 
@@ -89,18 +95,30 @@ const UserList: React.FC = () => {
         }
     };
 
+    const handleStatusChange = async (user: UsuarioFiltroResponse) => {
+        if (user.usuarioId) {
+            const newStatus = user.estado !== 'ACTIVO'; // If ACTIVO, we disable (false). If INACTIVO, we enable (true).
+            try {
+                setActionLoading(true);
+                await UserService.changeStatus(user.usuarioId, newStatus);
+                await fetchUsers(); // Refresh list to show new status
+            } catch (error) {
+                console.error("Error updating status:", error);
+            } finally {
+                setActionLoading(false);
+            }
+        }
+    };
+
     return (
-        <div className="w-full font-nunito text-gray-200 relative">
+        <div className="w-full font-nunito text-gray-200 relative min-h-screen">
+            {actionLoading && <UserLoadingOverlay type="fullscreen" />}
+
             <UserSidePanel
                 isOpen={isFilterOpen}
                 onClose={() => setIsFilterOpen(false)}
-                filters={filters}
-                onFilterChange={handleFilterChange}
+                currentFilters={filters}
                 onApply={applySideFilters}
-                onClear={() => {
-                    setFilters(prev => ({ ...prev, nombre: '', rolCodigo: '', start: 0 }));
-                    setIsFilterOpen(false);
-                }}
             />
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -123,6 +141,7 @@ const UserList: React.FC = () => {
                 users={users}
                 loading={loading}
                 onEdit={handleEditUser}
+                onStatusChange={handleStatusChange}
             />
 
             <UserListPagination

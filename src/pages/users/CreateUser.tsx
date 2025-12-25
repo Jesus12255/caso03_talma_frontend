@@ -141,7 +141,14 @@ const CreateUser = () => {
 
     return (
         <>
-            <LoadingOverlay isLoading={loading} message={isEditMode ? "Cargando datos del usuario..." : "Iniciando formulario..."} />
+            <LoadingOverlay
+                isLoading={loading || submitting}
+                message={
+                    loading
+                        ? (isEditMode ? "Cargando datos del usuario..." : "Iniciando formulario...")
+                        : (isEditMode ? "Actualizando usuario..." : "Registrando usuario y enviando credenciales...")
+                }
+            />
             <StatusModal
                 isOpen={modalConfig.isOpen}
                 onClose={closeModal}

@@ -5,7 +5,7 @@ import { UsuarioFiltroRequest } from '../../../services/UserService';
 interface UserFilterBarProps {
     filters: UsuarioFiltroRequest;
     onSearch: (e: React.FormEvent<HTMLFormElement>) => void;
-    onFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onFilterChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     onLimitChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     onOpenSidePanel: () => void;
     onCreateUser: () => void;
@@ -39,12 +39,14 @@ const UserFilterBar: React.FC<UserFilterBarProps> = ({
                     </div>
                 </div>
 
+
+
                 <form onSubmit={onSearch} className="flex-1 max-w-sm relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
                     <input
                         type="text"
-                        name="nombre"
-                        value={filters.nombre || ''}
+                        name="palabraClave"
+                        value={filters.palabraClave || ''}
                         onChange={onFilterChange}
                         placeholder="Buscar..."
                         className="w-full bg-[#161616] border border-[#212121] rounded-lg pl-10 pr-4 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-tivit-red transition-all"
