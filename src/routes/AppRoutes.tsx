@@ -16,10 +16,11 @@ const AppRoutes = () => {
             <Route path="/verify-code" element={<VerifyCodePage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route element={<MainLayout />}>
+                <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/users/create" element={<CreateUser />} />
                 <Route path="/users/edit/:id" element={<CreateUser />} />
                 <Route path="/users" element={<UserList />} />
-                <Route path="/" element={<Navigate to="/login" replace />} />
+                
             </Route>
 
         </Routes>
